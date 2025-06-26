@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { setAuth } from '../../redux/slices/authSlice'
+import './Login.css'
 
 
 export default function Login() {
