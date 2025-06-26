@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
-def get_tokens_for_use(user):
+def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     return{
         'refresh':str(refresh),
@@ -27,3 +27,12 @@ class RegisterView(APIView):
             password = data['password']
         )
         return Response(UserSerializer(user).data)
+
+class LoginView(APIView):
+    def post(self,request):
+        user = authenticate(username=request.data['username'],password=request.data['password'])
+        if user:
+            token = get_tokens_for_user(user)
+            return Response({'user':UserSerializer(user).data,'token':token})
+        return Response({'error':'invalid credential'},status = 401)
+    
