@@ -48,4 +48,21 @@ class ProfileView(APIView):
         user.save()
         return Response(UserSerializer(user).data)
 
-        
+class AdminUserListView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+
+    def get(self,request):
+        q = request.GET.get('q','')
+        users = User.objects.filter(username_icontains = q)
+        return Response(UserSerializer(users,many=True).data)
+
+    def put(self,request):
+        user = User.objects.get(id = request.data['id'])
+        user.email = request.data.get('email',user.email)
+        user.save()
+        return Response(UserSerializer(user).data)
+
+    def delete(self,request):
+        user = User.objects.get(id = request.data['id'])
+        user.delete()
+        return Response({'status': 'deleted'})
