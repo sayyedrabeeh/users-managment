@@ -36,3 +36,16 @@ class LoginView(APIView):
             return Response({'user':UserSerializer(user).data,'token':token})
         return Response({'error':'invalid credential'},status = 401)
     
+class ProfileView(APIView):
+    parser_classes =[MultiPartParser]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self,request):
+        return Response(UserSerializer(request.user).data)
+    def put(self,request):
+        user = request.user
+        user.profile_image = request.data.get('profile_image', user.profile_image)
+        user.save()
+        return Response(UserSerializer(user).data)
+
+        
