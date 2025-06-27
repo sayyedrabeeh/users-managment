@@ -13,7 +13,7 @@ export default function AdminPanel() {
   const [editImage, setEditImage] = useState(null)
   const [newUser, setNewUser] = useState({ username: '', email: '', profile_image: null })
   const [showModal, setShowModal] = useState(false)
-
+  const [formError, setFormError] = useState('');
   const fetchUsers = async () => {
     try {
       const res = await axios.get(`http://localhost:8000/api/admin/users/?q=${q}`, {
@@ -61,6 +61,10 @@ export default function AdminPanel() {
   }
 
   const handleAddUser = async () => {
+    if (!newUser.username.trim() || !newUser.email.trim()) {
+    setFormError("Username and Email are required.");
+    return;
+  }
     const formData = new FormData()
     formData.append('username', newUser.username)
     formData.append('email', newUser.email)
@@ -74,6 +78,7 @@ export default function AdminPanel() {
     })
 
     setNewUser({ username: '', email: '', profile_image: null })
+    setFormError('');
     setShowModal(false)
     fetchUsers()
   }
@@ -98,6 +103,7 @@ export default function AdminPanel() {
         <div className="modal-overlay">
           <div className="modal-content">
             <h3>Add New User</h3>
+               {formError && <div className="form-error">{formError}</div>}
             <input
               type="text"
               placeholder="Username"
@@ -116,7 +122,10 @@ export default function AdminPanel() {
             />
             <div className="modal-actions">
               <button className="btn btn-save" onClick={handleAddUser}>Add</button>
-              <button className="btn btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
+              <button className="btn btn-cancel" onClick={() => {
+          setShowModal(false)
+          setFormError('')
+        }}>Cancel</button>
             </div>
           </div>
         </div>

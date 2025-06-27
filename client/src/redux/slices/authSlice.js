@@ -24,7 +24,11 @@ const authSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
       localStorage.clear();
-    }
+    },
+    updateUser: (state, action) => {
+    state.user = action.payload;
+    localStorage.setItem('user', JSON.stringify(action.payload));
+  }
   }
 });
 

@@ -10,6 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.contrib.auth.hashers import make_password
 # Create your views here.
 
 def get_tokens_for_user(user):
@@ -104,9 +105,17 @@ class AdminUserListView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=400)
+            data = serializer.validated_data
+            user = User(
+                username=data['username'],
+                email=data.get('email', '')
+            )
+            user.set_password('123456')   
+            if 'profile_image' in request.FILES:
+                user.profile_image = request.FILES['profile_image']
+            user.save()
+            return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
         user = User.objects.get(id=request.data['id'])

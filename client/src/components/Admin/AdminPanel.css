@@ -193,3 +193,11 @@
   justify-content: flex-end;
   gap: 10px;
 }
+.form-error {
+  color: #e74c3c;
+  font-weight: 500;
+  margin-bottom: 10px;
+  background: #ffe0e0;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
