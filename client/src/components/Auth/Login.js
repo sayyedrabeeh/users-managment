@@ -26,7 +26,12 @@ const Login = () => {
     console.log("✅ Login success:", res.data);
 
     dispatch(setAuth({ user: res.data.user, token: res.data.token.access }));
-    navigate('/home');
+    console.log("User Info:", res.data.user);
+    if (res.data.user.is_admin) {
+  navigate('/admin');
+} else {
+  navigate('/home');
+}
   } catch (err) {
     console.log("❌ Login error:", err.response?.data);  
     const msg = err.response?.data?.error || 'Login failed. Try again.';

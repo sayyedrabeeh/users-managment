@@ -7,6 +7,9 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import AllowAny
+from rest_framework.parsers import MultiPartParser, FormParser
 # Create your views here.
 
 def get_tokens_for_user(user):
@@ -17,6 +20,7 @@ def get_tokens_for_user(user):
     }
 
 class RegisterView(APIView):
+    permission_classes = [AllowAny] 
     def post(self, request):
         data = request.data
         print("REGISTER DATA RECEIVED:", data)
@@ -56,6 +60,7 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
+    permission_classes = [AllowAny] 
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -87,20 +92,32 @@ class ProfileView(APIView):
         return Response(UserSerializer(user).data)
 
 class AdminUserListView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAdminUser]
+    parser_classes = [MultiPartParser, FormParser]
 
-    def get(self,request):
-        q = request.GET.get('q','')
-        users = User.objects.filter(username__icontains = q)
-        return Response(UserSerializer(users,many=True).data)
+    def get(self, request):
+        q = request.GET.get('q', '')
+        users = User.objects.filter(username__icontains=q)
+        return Response(UserSerializer(users, many=True).data)
 
-    def put(self,request):
-        user = User.objects.get(id = request.data['id'])
-        user.email = request.data.get('email',user.email)
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def put(self, request):
+        user = User.objects.get(id=request.data['id'])
+        user.username = request.data.get('username', user.username)
+        user.email = request.data.get('email', user.email)
+        if request.FILES.get('profile_image'):
+            user.profile_image = request.FILES['profile_image']
         user.save()
         return Response(UserSerializer(user).data)
 
-    def delete(self,request):
-        user = User.objects.get(id = request.data['id'])
+    def delete(self, request):
+        user = User.objects.get(id=request.data['id'])
         user.delete()
         return Response({'status': 'deleted'})
