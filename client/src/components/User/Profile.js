@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
+import './Profile.css'
 
 export default function Profile() {
   const { token, user } = useSelector(state => state.auth)
@@ -19,7 +20,7 @@ export default function Profile() {
   }
 
   return (
-    <div>
+    <div className="profile-container">
       <h2>Profile of {user.username}</h2>
       <input type="file" onChange={handleUpload} />
       <img src={`http://localhost:8000${user.profile_image}`} width={150} />
