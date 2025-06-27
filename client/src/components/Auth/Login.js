@@ -25,7 +25,7 @@ const Login = () => {
     const res = await axios.post('http://localhost:8000/api/login/', form);
     console.log("✅ Login success:", res.data);
 
-    dispatch(setAuth({ user: res.data.user, token: res.data.token.access }));
+    dispatch(setAuth({ user: res.data.user, token: res.data.token.access,refresh: res.data.token.refresh }));
     console.log("User Info:", res.data.user);
     if (res.data.user.is_admin) {
   navigate('/admin');

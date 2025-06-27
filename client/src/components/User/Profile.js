@@ -4,6 +4,7 @@ import axios from 'axios'
 import './Profile.css'
 import { useDispatch } from 'react-redux'
 import { updateUser } from '../../redux/slices/authSlice'
+import { getNewAccessToken } from '../../utils/refresh';
 
 export default function Profile() {
   const { token, user } = useSelector(state => state.auth)

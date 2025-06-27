@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import './AdminPanel.css'
+import { getNewAccessToken } from '../../utils/refresh';
 
 export default function AdminPanel() {
   const { token } = useSelector(state => state.auth)
