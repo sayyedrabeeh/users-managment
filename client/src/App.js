@@ -4,20 +4,20 @@ import Login from './components/Auth/Login'
 import Register from './components/Auth/Register'
 import Home from './components/User/Home'
 import Profile from './components/User/Profile'
-
-// import AdminPanel from './components/Admin/AdminPanel'
-// import Navbar from './components/common/Navbar'
+import AdminPanel from './components/Admin/AdminPanel'
+import Navbar from './components/common/Navbar'
 
 function App() {
   return (
     <BrowserRouter>
-      {/* <Navbar /> */}
+      <Navbar />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
-       </Routes>
+        <Route path="/admin" element={<AdminPanel />} />
+      </Routes>
     </BrowserRouter>
   )
 }
