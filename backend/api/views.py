@@ -86,11 +86,21 @@ class ProfileView(APIView):
 
     def get(self,request):
         return Response(UserSerializer(request.user).data)
-    def put(self,request):
-        user = request.user
-        user.profile_image = request.data.get('profile_image', user.profile_image)
+    def put(self, request):
+        user = request.user 
+        new_username = request.data.get('username', user.username)
+        new_email = request.data.get('email', user.email)
+        if User.objects.exclude(id=user.id).filter(username=new_username).exists():
+            return Response({'error': 'Username already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.exclude(id=user.id).filter(email=new_email).exists():
+            return Response({'error': 'Email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+        user.username = new_username
+        user.email = new_email
+        if request.FILES.get('profile_image'):
+            user.profile_image = request.FILES['profile_image']
         user.save()
         return Response(UserSerializer(user).data)
+
 
 class AdminUserListView(APIView):
     authentication_classes = [JWTAuthentication]

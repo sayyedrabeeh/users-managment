@@ -54,9 +54,9 @@ export default function AdminPanel() {
   }
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:8000/api/admin/users/`, {
+    await axios.delete(`http://localhost:8000/api/admin/users/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
-      data: { id }
+      
     })
     fetchUsers()
   }
@@ -88,7 +88,7 @@ export default function AdminPanel() {
     <div className="admin-container">
       <h2 className="admin-title">Admin Panel</h2>
 
-      {/* Search */}
+     
       <input
         className="admin-search"
         placeholder="Search users"
@@ -96,10 +96,10 @@ export default function AdminPanel() {
         onChange={e => setQ(e.target.value)}
       />
 
-      {/* Add User Button */}
+     
       <button className="btn btn-add-user" onClick={() => setShowModal(true)}>➕ Add User</button>
 
-      {/* Modal */}
+     
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -131,8 +131,7 @@ export default function AdminPanel() {
           </div>
         </div>
       )}
-
-      {/* User List */}
+ 
       {users.map(u => (
         <div key={u.id} className="user-card">
           <div className="user-info">

@@ -23,7 +23,7 @@ const Login = () => {
   e.preventDefault();
   try {
     const res = await axios.post('http://localhost:8000/api/login/', form);
-    console.log("✅ Login success:", res.data);
+  
 
     dispatch(setAuth({ user: res.data.user, token: res.data.token.access,refresh: res.data.token.refresh }));
     console.log("User Info:", res.data.user);
@@ -33,7 +33,7 @@ const Login = () => {
   navigate('/home');
 }
   } catch (err) {
-    console.log("❌ Login error:", err.response?.data);  
+    console.log("Login error:", err.response?.data);  
     const msg = err.response?.data?.error || 'Login failed. Try again.';
     setError(msg);
   }
