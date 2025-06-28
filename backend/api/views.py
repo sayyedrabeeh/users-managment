@@ -11,6 +11,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth.hashers import make_password
+from rest_framework.pagination import PageNumberPagination
+
 # Create your views here.
 
 def get_tokens_for_user(user):
@@ -101,6 +103,8 @@ class ProfileView(APIView):
         user.save()
         return Response(UserSerializer(user).data)
 
+class CustomPagination(PageNumberPagination):
+    page_size = 5
 
 class AdminUserListView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -110,8 +114,10 @@ class AdminUserListView(APIView):
     def get(self, request):
         q = request.GET.get('q', '')
         users = User.objects.filter(username__icontains=q)
-        return Response(UserSerializer(users, many=True).data)
-
+        paginator = CustomPagination()
+        result = paginator.paginate_queryset(users, request)
+        return paginator.get_paginated_response(UserSerializer(result, many=True).data)
+        
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
