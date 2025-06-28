@@ -265,3 +265,28 @@
   border-color: #007bff;
   font-weight: bold;
 }
+.modal-actions .btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.modal-actions .btn-save {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.modal-actions .btn-save:hover {
+  background-color: #218838;
+}
+
+.modal-actions .btn-cancel {
+  background-color: #dc3545;
+  color: white;
+}
+
+.modal-actions .btn-cancel:hover {
+  background-color: #c82333;
+}

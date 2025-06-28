@@ -103,8 +103,15 @@ class ProfileView(APIView):
         user.save()
         return Response(UserSerializer(user).data)
 
-class CustomPagination(PageNumberPagination):
-    page_size = 5
+class UserPagination(PageNumberPagination):
+    page_size = 5  
+
+    def get_paginated_response(self, data):
+        return Response({
+            'results': data,
+            'total_pages': self.page.paginator.num_pages,
+            'count': self.page.paginator.count,
+        })
 
 class AdminUserListView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -113,10 +120,11 @@ class AdminUserListView(APIView):
 
     def get(self, request):
         q = request.GET.get('q', '')
-        users = User.objects.filter(username__icontains=q)
-        paginator = CustomPagination()
-        result = paginator.paginate_queryset(users, request)
-        return paginator.get_paginated_response(UserSerializer(result, many=True).data)
+        users = User.objects.filter(username__icontains=q).order_by('-id')
+        paginator = UserPagination()
+        paginated_users = paginator.paginate_queryset(users, request)
+        serialized = UserSerializer(paginated_users, many=True)
+        return paginator.get_paginated_response(serialized.data)
         
     def post(self, request):
         serializer = UserSerializer(data=request.data)
