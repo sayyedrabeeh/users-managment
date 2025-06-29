@@ -150,7 +150,15 @@ class AdminUserListView(APIView):
         user.save()
         return Response(UserSerializer(user).data)
 
-    def delete(self, request):
-        user = User.objects.get(id=request.data['id'])
-        user.delete()
-        return Response({'status': 'deleted'})
+ 
+class AdminUserDetailView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAdminUser]
+
+    def delete(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+            user.delete()
+            return Response({'status': 'deleted'}, status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
