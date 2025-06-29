@@ -40,28 +40,30 @@ export default function Profile() {
       setSuccess(null);
     }
   };
-  return (
-    <div className="profile-container">
-      <h2>👤 Profile of {user.username}</h2>
-      <img src={preview} width={150} alt="preview" style={{ borderRadius: 8 }} />
-      <div>
-        <input type="file" onChange={handleFileChange} />
-      </div>
-      <input
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-        style={{ display: 'block', marginTop: 10 }}
-      />
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        style={{ display: 'block', marginBottom: 10 }}
-      />
-      <button onClick={handleSave}>💾 Save Profile</button>
-      {error && <div style={{ color: 'red', marginTop: 10 }}>{error}</div>}
-      {success && <div style={{ color: 'green', marginTop: 10 }}>{success}</div>}
-    </div>
-  );
+ return (
+  <div className="profile-container">
+    <h2>👤 Profile of {user.username}</h2>
+    <img src={preview} alt="Profile Preview" />
+    
+    <input type="file" onChange={handleFileChange} />
+
+    <input
+      type="text"
+      value={username}
+      onChange={(e) => setUsername(e.target.value)}
+      placeholder="Username"
+    />
+    <input
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      placeholder="Email"
+    />
+
+    <button onClick={handleSave}>💾 Save Profile</button>
+
+    {error && <div className="error-message">{error}</div>}
+    {success && <div className="success-message">{success}</div>}
+  </div>
+);
 }

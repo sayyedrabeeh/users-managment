@@ -11,6 +11,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth.hashers import make_password
+from rest_framework.pagination import PageNumberPagination
+
 # Create your views here.
 
 def get_tokens_for_user(user):
@@ -101,6 +103,15 @@ class ProfileView(APIView):
         user.save()
         return Response(UserSerializer(user).data)
 
+class UserPagination(PageNumberPagination):
+    page_size = 5  
+
+    def get_paginated_response(self, data):
+        return Response({
+            'results': data,
+            'total_pages': self.page.paginator.num_pages,
+            'count': self.page.paginator.count,
+        })
 
 class AdminUserListView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -109,9 +120,12 @@ class AdminUserListView(APIView):
 
     def get(self, request):
         q = request.GET.get('q', '')
-        users = User.objects.filter(username__icontains=q)
-        return Response(UserSerializer(users, many=True).data)
-
+        users = User.objects.filter(username__icontains=q).order_by('-id')
+        paginator = UserPagination()
+        paginated_users = paginator.paginate_queryset(users, request)
+        serialized = UserSerializer(paginated_users, many=True)
+        return paginator.get_paginated_response(serialized.data)
+        
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -136,7 +150,15 @@ class AdminUserListView(APIView):
         user.save()
         return Response(UserSerializer(user).data)
 
-    def delete(self, request):
-        user = User.objects.get(id=request.data['id'])
-        user.delete()
-        return Response({'status': 'deleted'})
+ 
+class AdminUserDetailView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAdminUser]
+
+    def delete(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+            user.delete()
+            return Response({'status': 'deleted'}, status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
