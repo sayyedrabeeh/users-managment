@@ -107,6 +107,7 @@ const confirmDelete = (id) => {
     <div className="admin-container">
       <h2 className="admin-title">Admin Panel</h2>
 
+     <div className="admin-toolbar">
       <input
         className="admin-search"
         placeholder="Search users"
@@ -114,7 +115,10 @@ const confirmDelete = (id) => {
         onChange={e => setQ(e.target.value)}
       />
 
-      <button className="btn btn-add-user" onClick={() => setShowModal(true)}>➕ Add User</button>
+      <button className="btn btn-add-user" onClick={() => setShowModal(true)}>
+        ➕ Add User
+      </button>
+    </div>
 
       {showModal && (
         <div className="modal-overlay">
@@ -209,7 +213,7 @@ const confirmDelete = (id) => {
 )}
 
 
-      {/* Pagination Controls */}
+  
       {totalPages > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem', gap: '0.5rem' }}>
           <button
