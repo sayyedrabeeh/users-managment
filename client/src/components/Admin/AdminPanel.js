@@ -16,6 +16,8 @@ export default function AdminPanel() {
   const [formError, setFormError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
   const fetchUsers = async () => {
     try {
@@ -28,6 +30,10 @@ export default function AdminPanel() {
       console.error('Failed to fetch users', err);
     }
   };
+const confirmDelete = (id) => {
+  setUserToDelete(id);
+  setShowDeleteModal(true);
+};
 
   useEffect(() => {
     fetchUsers();
@@ -58,12 +64,21 @@ export default function AdminPanel() {
     fetchUsers();
   };
 
-  const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:8000/api/admin/users/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    fetchUsers();
-  };
+ const handleConfirmDelete = async () => {
+  if (userToDelete !== null) {
+    try {
+      await axios.delete(`http://localhost:8000/api/admin/users/${userToDelete}/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchUsers();
+    } catch (error) {
+      console.error('Delete failed:', error);
+    } finally {
+      setShowDeleteModal(false);
+      setUserToDelete(null);
+    }
+  }
+};
 
   const handleAddUser = async () => {
     if (!newUser.username.trim() || !newUser.email.trim()) {
@@ -176,12 +191,23 @@ export default function AdminPanel() {
             ) : (
               <>
                 <button className="btn btn-edit" onClick={() => handleEdit(u)}>Edit</button>
-                <button className="btn btn-delete" onClick={() => handleDelete(u.id)}>Delete</button>
+                <button className="btn btn-delete" onClick={() => confirmDelete(u.id)}>Delete</button>
               </>
             )}
           </div>
         </div>
       ))}
+      {showDeleteModal && (
+  <div className="modal-overlay">
+    <div className="modal">
+      <h3>Confirm Delete</h3>
+      <p>Are you sure you want to delete this user?</p>
+      <button className="btn btn-danger" onClick={handleConfirmDelete}>Yes, Delete</button>
+      <button className="btn btn-secondary" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+    </div>
+  </div>
+)}
+
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
