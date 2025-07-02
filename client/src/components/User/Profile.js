@@ -13,6 +13,7 @@ export default function Profile() {
   const [email, setEmail] = useState(user.email);
   const [error, setError] = useState(null); 
   const [success, setSuccess] = useState(null); 
+  const hasChanges = img || username !== user.username || email !== user.email;
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setImg(file);
@@ -60,7 +61,9 @@ export default function Profile() {
       placeholder="Email"
     />
 
-    <button onClick={handleSave}>💾 Save Profile</button>
+    {hasChanges && (
+        <button onClick={handleSave}>💾 Save Profile</button>
+      )}
 
     {error && <div className="error-message">{error}</div>}
     {success && <div className="success-message">{success}</div>}
