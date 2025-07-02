@@ -129,8 +129,6 @@ git merge full-feature-merge
 
 This project is open-source under the [MIT License](LICENSE).
 
-````
-
----
+ 
 
  
