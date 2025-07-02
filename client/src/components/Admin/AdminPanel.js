@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import axios from '../../utils/axiosInstance';
 import './AdminPanel.css';
 
 export default function AdminPanel() {
@@ -24,7 +24,7 @@ export default function AdminPanel() {
       const res = await axios.get(`http://localhost:8000/api/admin/users/?q=${q}&page=${currentPage}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUsers(res.data.results || res.data); // Adjust based on backend
+      setUsers(res.data.results || res.data); 
       setTotalPages(res.data.total_pages || 1);
     } catch (err) {
       console.error('Failed to fetch users', err);
