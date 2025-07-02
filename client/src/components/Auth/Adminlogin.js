@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { setAuth } from '../../redux/slices/authSlice';
 import './Login.css';
 
-const Login = () => {
+const AdminLogin = () => {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const dispatch = useDispatch();
@@ -16,30 +16,36 @@ const Login = () => {
       ...form,
       [e.target.name]: e.target.value,
     });
-    setError('');  
+    setError('');
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await axios.post('http://localhost:8000/api/login/', form);
-  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:8000/api/login/', form);
+      const { user, token } = res.data;
 
-    dispatch(setAuth({ user: res.data.user, token: res.data.token.access,refresh: res.data.token.refresh }));
-    
-  navigate('/home');
-
-  } catch (err) {
-    console.log("Login error:", err.response?.data);  
-    const msg = err.response?.data?.error || 'Login failed. Try again.';
-    setError(msg);
-  }
-};
+      if (user.is_admin) {
+        dispatch(setAuth({
+          user,
+          token: token.access,
+          refresh: token.refresh
+        }));
+        navigate('/admin');
+      } else {
+        setError("❌ You are not allowed to access the admin panel.");
+      }
+    } catch (err) {
+      console.error("Login error:", err.response?.data);
+      const msg = err.response?.data?.error || 'Login failed. Try again.';
+      setError(msg);
+    }
+  };
 
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">Login</h2>
+        <h2 className="login-title">Admin Login</h2>
 
         <input
           type="text"
@@ -67,4 +73,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;
