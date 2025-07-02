@@ -7,7 +7,7 @@ import AdminPanel from './components/Admin/AdminPanel';
 import Navbar from './components/common/Navbar';
 import ProtectedRoute from './routes/ProtectedRoute';
 import PublicOnlyRoute from './routes/PublicOnlyRoute';
-import AdminLogin from './components/Auth/adminlogin';
+import AdminLogin from './components/Auth/Adminlogin';
 
 function App() {
   return (
