@@ -1,9 +1,13 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector ,useDispatch} from 'react-redux'
 import './Profile.css'
+ 
 
 export default function Home() {
-  const { user } = useSelector(state => state.auth)
+  const { user,toggle } = useSelector(state => state.auth)
+ 
+
+  const dispatch = useDispatch()
 
   return (
     <div className="home-container">
@@ -13,6 +17,7 @@ export default function Home() {
       </div>
       <div className="home-card">
         <h2>Hello, {user?.username} 👋</h2>
+        
         <p>Glad to see you here. Explore your profile and manage your account with ease.</p>
       </div>
 

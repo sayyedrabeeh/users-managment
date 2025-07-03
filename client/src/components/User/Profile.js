@@ -8,7 +8,10 @@ export default function Profile() {
   const { token, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [img, setImg] = useState(null);
-  const [preview, setPreview] = useState(`http://localhost:8000${user.profile_image}`);
+  const [preview, setPreview] = useState(
+  user.profile_image ? `http://localhost:8000${user.profile_image}` : '/default-profile.png'
+);
+
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [error, setError] = useState(null); 
@@ -46,7 +49,7 @@ export default function Profile() {
     <h2>👤 Profile of {user.username}</h2>
     <img src={preview} alt="Profile Preview" />
     
-    <input type="file" onChange={handleFileChange} />
+    <input type="file" accept="image/*" onChange={handleFileChange} />
 
     <input
       type="text"
