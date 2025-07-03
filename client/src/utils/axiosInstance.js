@@ -5,12 +5,10 @@ const baseURL = 'http://localhost:8000/api/';
 
 const axiosInstance = axios.create({
   baseURL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+   
 });
 
-// Request Interceptor (optional - you can attach tokens here too)
+ 
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');

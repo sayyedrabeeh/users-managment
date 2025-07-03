@@ -83,7 +83,7 @@ class LoginView(APIView):
         return Response({'error': 'Invalid credentials'}, status=401)
     
 class ProfileView(APIView):
-    parser_classes =[MultiPartParser]
+    parser_classes = [MultiPartParser, FormParser] 
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self,request):
